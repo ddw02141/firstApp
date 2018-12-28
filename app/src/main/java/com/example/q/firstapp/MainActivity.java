@@ -38,7 +38,9 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
+
 import android.Manifest;
+
 import com.gun0912.tedpermission.PermissionListener;
 import com.gun0912.tedpermission.TedPermission;
 
@@ -50,24 +52,17 @@ public class MainActivity extends AppCompatActivity {
     TabHost.TabSpec ts3;
     AssetManager assetManager;
     JSONArray jsonArray;
+    ArrayList<Uri> images;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-
-
-        int permissonCheck = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE);
-
-        if(permissonCheck== PackageManager.PERMISSION_GRANTED){
-            Toast.makeText(getApplicationContext(),"읽기 권한",Toast.LENGTH_LONG).show();
-        }else
-            Toast.makeText(getApplicationContext(), "없음", Toast.LENGTH_LONG).show();
+        getImage();
         tab1();
         tab2();
-        getImage();
+
         tabHost = (TabHost) findViewById(R.id.tabHost);
         tabHost.setup();
 
@@ -86,12 +81,19 @@ public class MainActivity extends AppCompatActivity {
         ts3.setIndicator("TAB 3");
         tabHost.addTab(ts3);
 
+        int permissonCheck = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE);
+        if (permissonCheck == PackageManager.PERMISSION_GRANTED) {
+            Toast.makeText(getApplicationContext(), images.size()+"", Toast.LENGTH_LONG).show();
+        } else
+            Toast.makeText(getApplicationContext(), "없음", Toast.LENGTH_LONG).show();
+
         PermissionListener permissionlistener = new PermissionListener() {
             @Override
             public void onPermissionGranted() {
                 //Toast.makeText(MainActivity.this, "Permission Granted", Toast.LENGTH_SHORT).show();
 
             }
+
             @Override
             public void onPermissionDenied(ArrayList<String> deniedPermissions) {
                 Toast.makeText(MainActivity.this, "Permission Denied\n" + deniedPermissions.toString(), Toast.LENGTH_SHORT).show();
@@ -110,9 +112,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    public void getImage(){
+    public void getImage() {
 
-        String[] projection = { MediaStore.Images.Media.DATA };
+        String[] projection = {MediaStore.Images.Media.DATA};
 
         Cursor imageCursor = getContentResolver().query(
                 MediaStore.Images.Media.EXTERNAL_CONTENT_URI, // 이미지 컨텐트 테이블
@@ -130,11 +132,13 @@ public class MainActivity extends AppCompatActivity {
                 String filePath = imageCursor.getString(dataColumnIndex);
                 Uri imageUri = Uri.parse(filePath);
                 result.add(imageUri);
-            } while(imageCursor.moveToNext());
+            } while (imageCursor.moveToNext());
         } else {
             // imageCursor가 비었습니다.
         }
         imageCursor.close();
+
+        images = result;
     }
 
     public void readSamples() {
@@ -194,20 +198,20 @@ public class MainActivity extends AppCompatActivity {
     public void tab2() {
         GridView gridView;
         CostomImageAdapter imageAdapter;
-//        CostomGallery gallery = new CostomGallery(this);
         imageAdapter = new CostomImageAdapter(this);
-
         gridView = (GridView) findViewById(R.id.gridview);
         gridView.setAdapter(imageAdapter);
-        imageAdapter.addItem(null);
-        imageAdapter.addItem(null);
-        imageAdapter.addItem(null);
-        imageAdapter.addItem(null);
-        imageAdapter.addItem(null);
-        imageAdapter.addItem(null);
-        imageAdapter.addItem(null);
-        imageAdapter.addItem(null);
-
+        for (int i = 0; i < images.size(); i++) {
+            imageAdapter.addItem(images.get(i));
+        }
+//        imageAdapter.addItem(null);
+//        imageAdapter.addItem(null);
+//        imageAdapter.addItem(null);
+//        imageAdapter.addItem(null);
+//        imageAdapter.addItem(null);
+//        imageAdapter.addItem(null);
+//        imageAdapter.addItem(null);
+//        imageAdapter.addItem(null);
 
 
     }
