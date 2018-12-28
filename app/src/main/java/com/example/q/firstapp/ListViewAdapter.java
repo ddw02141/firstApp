@@ -11,25 +11,20 @@ import java.util.ArrayList;
 
 public class ListViewAdapter extends BaseAdapter {
     private ArrayList<ListViewItem> listViewItemList = new ArrayList<ListViewItem>();
-
     public ListViewAdapter(){
-
     }
     @Override
     public int getCount() {
         return listViewItemList.size();
     }
-
     @Override
     public Object getItem(int i) {
         return listViewItemList.get(i);
     }
-
     @Override
     public long getItemId(int i) {
         return i;
     }
-
     @Override
     public View getView(int i, View view, ViewGroup parent) {
         final int pos = i;
@@ -44,7 +39,6 @@ public class ListViewAdapter extends BaseAdapter {
         ListViewItem listViewItem = listViewItemList.get(i);
         nameView.setText(listViewItem.getName());
         phoneView.setText(listViewItem.getPhone());
-
         return view;
     }
     public void addItem(String name, String phone) {

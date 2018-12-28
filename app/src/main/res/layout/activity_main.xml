@@ -6,9 +6,11 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <TabHost android:id="@+id/tabHost"
+    <TabHost
+        android:id="@+id/tabHost"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
+
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -26,54 +28,25 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
                 <!-- 첫 번째 페이지. content1 -->
-                <LinearLayout
-                    android:id="@+id/content1"
+
+                <ListView
+                    android:id="@+id/listView1"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
-                    <ListView
-                        android:id="@+id/listView1"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent">
-                    </ListView>
+                    android:layout_height="match_parent"></ListView>
 
-                    <!--<ScrollView-->
-                        <!--android:layout_width="match_parent"-->
-                        <!--android:layout_height="match_parent">-->
+                <GridView
+                    android:id="@+id/gridview"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:columnWidth="90dip"
+                    android:numColumns="auto_fit"
+                    android:verticalSpacing="10dp"
+                    android:stretchMode="columnWidth"
+                    android:gravity="center"
+                   >
 
-                        <!--<LinearLayout-->
-                            <!--android:id="@+id/phoneNumbers"-->
-                            <!--android:layout_width="match_parent"-->
-                            <!--android:layout_height="wrap_content"-->
-                            <!--android:orientation="vertical" >-->
+                </GridView>
 
-                            <!--<TextView-->
-                                <!--android:id="@+id/tv1"-->
-                                <!--android:layout_width="match_parent"-->
-                                <!--android:layout_height="wrap_content"-->
-                                <!--android:background="#8BC34A"-->
-                                <!--android:gravity="center"-->
-                                <!--android:padding="8dp"-->
-                                <!--android:text="TAB CONTENT 1" />-->
-                        <!--</LinearLayout>-->
-                    <!--</ScrollView>-->
-
-                </LinearLayout>
-                <LinearLayout
-                    android:id="@+id/content2"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:background="#8BC34A"
-                        android:gravity="center"
-                        android:padding="8dp"
-                        android:text="TAB CONTENT 2" />
-
-                </LinearLayout>
                 <LinearLayout
                     android:id="@+id/content3"
                     android:layout_width="match_parent"
