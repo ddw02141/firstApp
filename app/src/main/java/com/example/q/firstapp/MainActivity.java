@@ -26,6 +26,7 @@ import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
     //For test
+    //For test branch
     TabHost tabHost;
     TabHost.TabSpec ts1;
     TabHost.TabSpec ts2;
