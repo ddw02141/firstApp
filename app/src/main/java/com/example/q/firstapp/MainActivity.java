@@ -7,6 +7,7 @@ import android.util.JsonReader;
 import android.util.Pair;
 import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.TabHost;
 import android.widget.TableLayout;
 import android.widget.TableRow;
@@ -30,57 +31,32 @@ public class MainActivity extends AppCompatActivity {
     TabHost.TabSpec ts1;
     TabHost.TabSpec ts2;
     TabHost.TabSpec ts3;
+    AssetManager assetManager;
+    JSONArray jsonArray;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        TextView tv1 = (TextView)findViewById(R.id.tv1);
-        LinearLayout l1 = (LinearLayout)findViewById(R.id.phoneNumbers);
+//        TextView tv1 = (TextView) findViewById(R.id.tv1);
+        readSamples();
+        ListView listView;
+        ListViewAdapter listViewAdapter;
 
-        AssetManager assetManager = getResources().getAssets();
-        try {
-            AssetManager.AssetInputStream ais = (AssetManager.AssetInputStream) assetManager.open("sample.json");
-            BufferedReader br = new BufferedReader(new InputStreamReader(ais));
-            StringBuilder sb = new StringBuilder();
-            int bufferSize = 1024 * 1024;
-            char readBuf[] = new char[bufferSize];
-            int resultSize = 0;
-            while ((resultSize = br.read(readBuf)) != -1) {
-                if (resultSize == bufferSize) {
-                    sb.append(readBuf);
-                } else {
-                    for (int i = 0; i < resultSize; i++) {
-                        //StringBuilder 에 append
-                        sb.append(readBuf[i]);
-                    }
-                }
-            }
-            String jString = sb.toString();
+        listViewAdapter = new ListViewAdapter();
 
-            //JSONObject 얻어 오기
-            JSONArray jsonArray = new JSONArray(jString);
-
-            //json value 값 얻기
-            for(int i =0;i<jsonArray.length();i++){
-                String name = ((JSONObject)(jsonArray.get(i))).get("name").toString();
-                String phone =  ((JSONObject)(jsonArray.get(i))).get("phone").toString();
-//                TextView nameView = new TextView(this);
-//                TextView phoneView = new TextView(this);
-//                LinearLayout l2 = new LinearLayout(this);
-//                l2.setOrientation(LinearLayout.HORIZONTAL);
-//                l2.addView(nameView);
-//                l2.addView(phoneView);
-                TextView tv = new TextView(this);
-                tv.setText(name+"\t\t"+phone);
-                l1.addView(tv);
-
+        listView = (ListView) findViewById(R.id.listView1);
+        listView.setAdapter(listViewAdapter);
+        for (int i = 0; i < jsonArray.length(); i++) {
+            try {
+                String name = ((JSONObject) (jsonArray.get(i))).get("name").toString();
+                String phone = ((JSONObject) (jsonArray.get(i))).get("phone").toString();
+                listViewAdapter.addItem(name, phone);
+            } catch (JSONException e) {
+                e.printStackTrace();
             }
 
 
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (JSONException e) {
-            e.printStackTrace();
         }
 
 
@@ -103,6 +79,37 @@ public class MainActivity extends AppCompatActivity {
         tabHost.addTab(ts3);
 
 
+    }
+
+    public void readSamples() {
+        assetManager = getResources().getAssets();
+        try {
+            AssetManager.AssetInputStream ais = (AssetManager.AssetInputStream) assetManager.open("sample.json");
+            BufferedReader br = new BufferedReader(new InputStreamReader(ais));
+            StringBuilder sb = new StringBuilder();
+            int bufferSize = 1024 * 1024;
+            char readBuf[] = new char[bufferSize];
+            int resultSize = 0;
+            while ((resultSize = br.read(readBuf)) != -1) {
+                if (resultSize == bufferSize) {
+                    sb.append(readBuf);
+                } else {
+                    for (int i = 0; i < resultSize; i++) {
+                        //StringBuilder 에 append
+                        sb.append(readBuf[i]);
+                    }
+                }
+            }
+            String jString = sb.toString();
+
+            //JSONObject 얻어 오기
+            jsonArray = new JSONArray(jString);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
 }
