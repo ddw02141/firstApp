@@ -1,5 +1,12 @@
 package com.example.q.firstapp;
 
+
+import com.gun0912.tedpermission.PermissionListener;
+import com.gun0912.tedpermission.TedPermission;
+
+import android.widget.Toast;
+
+import android.Manifest;
 import android.content.res.AssetManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -25,18 +32,25 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
-    //For test
-    //For test branch
+
     TabHost tabHost;
     TabHost.TabSpec ts1;
     TabHost.TabSpec ts2;
     TabHost.TabSpec ts3;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        TextView tv1 = (TextView)findViewById(R.id.tv1);
-        LinearLayout l1 = (LinearLayout)findViewById(R.id.phoneNumbers);
+
+
+
+
+
+        TextView tv1 = (TextView) findViewById(R.id.tv1);
+        LinearLayout l1 = (LinearLayout) findViewById(R.id.phoneNumbers);
 
         AssetManager assetManager = getResources().getAssets();
         try {
@@ -62,17 +76,17 @@ public class MainActivity extends AppCompatActivity {
             JSONArray jsonArray = new JSONArray(jString);
 
             //json value 값 얻기
-            for(int i =0;i<jsonArray.length();i++){
-                String name = ((JSONObject)(jsonArray.get(i))).get("name").toString();
-                String phone =  ((JSONObject)(jsonArray.get(i))).get("phone").toString();
+            for (int i = 0; i < jsonArray.length(); i++) {
+                String name = ((JSONObject) (jsonArray.get(i))).get("name").toString();
+                String phone = ((JSONObject) (jsonArray.get(i))).get("phone").toString();
 //                TextView nameView = new TextView(this);
 //                TextView phoneView = new TextView(this);
 //                LinearLayout l2 = new LinearLayout(this);
 //                l2.setOrientation(LinearLayout.HORIZONTAL);
 //                l2.addView(nameView);
 //                l2.addView(phoneView);
-                TextView tv = new TextView(this);
-                tv.setText(name+"\t\t"+phone);
+                TextView tv = new TextView(MainActivity.this);
+                tv.setText(name + "\t\t" + phone);
                 l1.addView(tv);
 
             }
@@ -104,6 +118,33 @@ public class MainActivity extends AppCompatActivity {
         tabHost.addTab(ts3);
 
 
+        PermissionListener permissionlistener = new PermissionListener() {
+            @Override
+            public void onPermissionGranted() {
+                //Toast.makeText(MainActivity.this, "Permission Granted", Toast.LENGTH_SHORT).show();
+
+            }
+            @Override
+            public void onPermissionDenied(ArrayList<String> deniedPermissions) {
+                Toast.makeText(MainActivity.this, "Permission Denied\n" + deniedPermissions.toString(), Toast.LENGTH_SHORT).show();
+                finish();
+            }
+        };
+
+        TedPermission.with(this)
+                .setPermissionListener(permissionlistener)
+                .setDeniedMessage("If you reject permission,you can not use this service\n\nPlease turn on permissions at [Setting] > [App Permissions]")
+                .setPermissions(Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                        Manifest.permission.READ_EXTERNAL_STORAGE,
+                        Manifest.permission.CAMERA)
+                .check();
+
+
+
+
+
+
     }
+
 
 }
