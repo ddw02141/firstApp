@@ -1,9 +1,17 @@
 package com.example.q.firstapp;
 
+import com.gun0912.tedpermission.PermissionListener;
+import com.gun0912.tedpermission.TedPermission;
+
+import android.widget.Toast;
+
+import android.Manifest;
+
 import android.Manifest;
 import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.pm.PackageManager;
+
 import android.content.res.AssetManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -46,46 +54,30 @@ import com.gun0912.tedpermission.TedPermission;
 
 
 public class MainActivity extends AppCompatActivity {
-    TabHost tabHost;
+
     TabHost.TabSpec ts1;
     TabHost.TabSpec ts2;
     TabHost.TabSpec ts3;
+
+
     AssetManager assetManager;
     JSONArray jsonArray;
     ArrayList<Uri> images;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        getImage();
-        tab1();
-        tab2();
 
-        tabHost = (TabHost) findViewById(R.id.tabHost);
-        tabHost.setup();
 
-        ts1 = tabHost.newTabSpec("Tab1");
-        ts1.setContent(R.id.listView1);
-        ts1.setIndicator("연락처");
-        tabHost.addTab(ts1);
+        //TextView tv1 = (TextView) findViewById(R.id.tv1);
+        //LinearLayout l1 = (LinearLayout) findViewById(R.id.phoneNumbers);
 
-        ts2 = tabHost.newTabSpec("Tab2");
-        ts2.setContent(R.id.gridview);
-        ts2.setIndicator("갤러리");
-        tabHost.addTab(ts2);
 
-        ts3 = tabHost.newTabSpec("Tab3");
-        ts3.setContent(R.id.content3);
-        ts3.setIndicator("TAB 3");
-        tabHost.addTab(ts3);
 
-        int permissonCheck = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE);
-        if (permissonCheck == PackageManager.PERMISSION_GRANTED) {
-            Toast.makeText(getApplicationContext(), images.size()+"", Toast.LENGTH_LONG).show();
-        } else
-            Toast.makeText(getApplicationContext(), "없음", Toast.LENGTH_LONG).show();
 
         PermissionListener permissionlistener = new PermissionListener() {
             @Override
@@ -108,111 +100,6 @@ public class MainActivity extends AppCompatActivity {
                         Manifest.permission.READ_EXTERNAL_STORAGE,
                         Manifest.permission.CAMERA)
                 .check();
-
-    }
-
-
-    public void getImage() {
-
-        String[] projection = {MediaStore.Images.Media.DATA};
-
-        Cursor imageCursor = getContentResolver().query(
-                MediaStore.Images.Media.EXTERNAL_CONTENT_URI, // 이미지 컨텐트 테이블
-                projection, // DATA를 출력
-                null,       // 모든 개체 출력
-                null,
-                null);      // 정렬 안 함
-        ArrayList<Uri> result = new ArrayList<>(imageCursor.getCount());
-        int dataColumnIndex = imageCursor.getColumnIndex(projection[0]);
-
-        if (imageCursor == null) {
-
-        } else if (imageCursor.moveToFirst()) {
-            do {
-                String filePath = imageCursor.getString(dataColumnIndex);
-                Uri imageUri = Uri.parse(filePath);
-                result.add(imageUri);
-            } while (imageCursor.moveToNext());
-        } else {
-            // imageCursor가 비었습니다.
-        }
-        imageCursor.close();
-
-        images = result;
-    }
-
-    public void readSamples() {
-        assetManager = getResources().getAssets();
-        try {
-            AssetManager.AssetInputStream ais = (AssetManager.AssetInputStream) assetManager.open("sample.json");
-            BufferedReader br = new BufferedReader(new InputStreamReader(ais));
-            StringBuilder sb = new StringBuilder();
-            int bufferSize = 1024 * 1024;
-            char readBuf[] = new char[bufferSize];
-            int resultSize = 0;
-            while ((resultSize = br.read(readBuf)) != -1) {
-                if (resultSize == bufferSize) {
-                    sb.append(readBuf);
-                } else {
-                    for (int i = 0; i < resultSize; i++) {
-                        //StringBuilder 에 append
-                        sb.append(readBuf[i]);
-                    }
-                }
-            }
-            String jString = sb.toString();
-
-            //JSONObject 얻어 오기
-            jsonArray = new JSONArray(jString);
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void tab1() {
-        readSamples();
-        ListView listView;
-        ListViewAdapter listViewAdapter;
-
-        listViewAdapter = new ListViewAdapter();
-
-        listView = (ListView) findViewById(R.id.listView1);
-        listView.setAdapter(listViewAdapter);
-
-        for (int i = 0; i < jsonArray.length(); i++) {
-            try {
-                String name = ((JSONObject) (jsonArray.get(i))).get("name").toString();
-                String phone = ((JSONObject) (jsonArray.get(i))).get("phone").toString();
-                listViewAdapter.addItem(name, phone);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-
-
-        }
-    }
-
-    public void tab2() {
-        GridView gridView;
-        CostomImageAdapter imageAdapter;
-        imageAdapter = new CostomImageAdapter(this);
-        gridView = (GridView) findViewById(R.id.gridview);
-        gridView.setAdapter(imageAdapter);
-        for (int i = 0; i < images.size(); i++) {
-            imageAdapter.addItem(images.get(i));
-        }
-//        imageAdapter.addItem(null);
-//        imageAdapter.addItem(null);
-//        imageAdapter.addItem(null);
-//        imageAdapter.addItem(null);
-//        imageAdapter.addItem(null);
-//        imageAdapter.addItem(null);
-//        imageAdapter.addItem(null);
-//        imageAdapter.addItem(null);
-
 
     }
 }
